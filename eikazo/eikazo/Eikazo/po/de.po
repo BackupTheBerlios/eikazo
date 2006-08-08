@@ -1,0 +1,337 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Abel Deuring <adeuring@gmx.net>, 2006.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Eikazo 0.3\n"
+"Report-Msgid-Bugs-To: adeuring@gmx.net\n"
+"POT-Creation-Date: 2006-07-20 20:06+0200\n"
+"PO-Revision-Date: 2006-07-20 22:00+0200\n"
+"Last-Translator: Abel Deuring <adeuring@gmx.net>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/Eikazo/devices/fujitsu.py:305
+msgid "Overscan"
+msgstr ""
+
+#: src/Eikazo/postprocessing/AdaptiveThreshold.py:81
+#: src/Eikazo/postprocessing/Clean.py:82
+msgid "length of averaging square (mm)"
+msgstr "Länge des Mittelungsquadrat"
+
+#: src/Eikazo/postprocessing/AdaptiveThreshold.py:87
+#, python-format
+msgid "Offset (% of white value)"
+msgstr "Offset (% des Weißwerts)"
+
+#: src/Eikazo/postprocessing/Clean.py:88
+msgid "Threshold: Percentage of black pixels"
+msgstr "Schweelwert: Anteil schwarzer Pixel in Prozent"
+
+#: src/Eikazo/postprocessing/procinfo.py:69
+#, python-format
+msgid "queued by %s"
+msgstr "in Warteschlange von %s"
+
+#: src/Eikazo/postprocessing/procinfo.py:102
+#, python-format
+msgid "processed by %s"
+msgstr "bearbeitet von %s"
+
+#: src/Eikazo/postprocessing/procinfo.py:111
+#, python-format
+msgid "filter error: %s"
+msgstr "Filterfehler: %s"
+
+#: src/Eikazo/Widgets.py:667 src/Eikazo/Widgets.py:683
+msgid "[off]"
+msgstr "[aus]"
+
+#: src/Eikazo/Widgets.py:681
+msgid "[on]"
+msgstr "[an]"
+
+#: src/Eikazo/Preview.py:103
+msgid "Limit display to scan window"
+msgstr "[Anzeige auf Scanfenster beschränken]"
+
+#: src/Eikazo/ScanJob.py:42
+msgid "Job No"
+msgstr "Job Nr."
+
+#: src/Eikazo/ScanJob.py:52
+msgid "Status"
+msgstr "Status"
+
+#: src/Eikazo/output/SaneScanToFile.py:89
+msgid "Description"
+msgstr "Beschreibung"
+
+#: src/Eikazo/output/SaneScanToFile.py:99
+msgid "Copyright"
+msgstr "Copyright"
+
+#: src/Eikazo/output/SaneScanToFile.py:163
+msgid "quality"
+msgstr "Qualität"
+
+#: src/Eikazo/output/SaneScanToFile.py:252
+msgid "waiting to be written"
+msgstr "Warte auf Schreiben"
+
+#: src/Eikazo/output/SaneScanToFile.py:265
+msgid "writing"
+msgstr "schreibe"
+
+#: src/Eikazo/output/SaneScanToFile.py:271
+msgid "write error"
+msgstr "Schreibfehler"
+
+#: src/Eikazo/output/SaneScanToFile.py:330
+msgid "file name:"
+msgstr "Dateiname:"
+
+#: src/Eikazo/output/SaneScanToFile.py:340
+msgid "Browse"
+msgstr "Durchsuchen"
+
+#: src/Eikazo/output/SaneScanToFile.py:349
+msgid "file counter"
+msgstr "Dateizähler"
+
+#: src/Eikazo/output/SaneScanToFile.py:362
+msgid "file counter increment"
+msgstr "Dateizähler-Inkrement"
+
+#: src/Eikazo/output/SaneScanToFile.py:375
+msgid "file format"
+msgstr "Dateiformat"
+
+#: src/Eikazo/output/SaneScanToFile.py:412
+msgid "last saved files"
+msgstr "letzte gespeicherte Dateien"
+
+#: src/Eikazo/output/SaneScanToFile.py:429
+msgid "mode"
+msgstr "Modus"
+
+#: src/Eikazo/output/SaneScanToFile.py:429
+msgid "res"
+msgstr "Aufl."
+
+#: src/Eikazo/output/SaneScanToFile.py:429
+msgid "size"
+msgstr "Größe"
+
+#: src/Eikazo/output/SaneScanToFile.py:429
+msgid "file name"
+msgstr "Dateiname"
+
+#: src/Eikazo/output/SaneScanToFile.py:451
+msgid "can't insert a file number into the file name"
+msgstr "Kann keine Nummer in Dateinamen einsetzen"
+
+#: src/Eikazo/output/SaneScanToFile.py:469 src/Eikazo/Eikazo.py:521
+#: src/Eikazo/Eikazo.py:555
+msgid "Select filename..."
+msgstr "Dateiname wählen"
+
+#: src/Eikazo/output/SaneScanToFile.py:475 src/Eikazo/Eikazo.py:531
+#: src/Eikazo/Eikazo.py:565
+msgid "All files"
+msgstr "Alle Dateien"
+
+#: src/Eikazo/output/SaneScanToLpr.py:56
+#: src/Eikazo/output/SaneScanToPrint.py:54
+msgid "waiting to be printed"
+msgstr "Warte auf Drucken"
+
+#: src/Eikazo/output/SaneScanToLpr.py:69
+#: src/Eikazo/output/SaneScanToPrint.py:67
+msgid "printing"
+msgstr "drucke"
+
+#: src/Eikazo/output/SaneScanToLpr.py:76
+#: src/Eikazo/output/SaneScanToPrint.py:74
+msgid "print error"
+msgstr "Fehler beim Drucken"
+
+#: src/Eikazo/output/SaneScanToLpr.py:177
+msgid "Page size"
+msgstr "Seitengröße"
+
+#: src/Eikazo/output/SaneScanToLpr.py:189
+msgid "custom page size"
+msgstr "benutzerdefinierte Seitengröße"
+
+#: src/Eikazo/output/SaneScanToLpr.py:194
+msgid "page width [mm]"
+msgstr "Seitenbreite [mm]"
+
+#: src/Eikazo/output/SaneScanToLpr.py:208
+msgid "page height [mm]"
+msgstr "Seitenhöhe [mm]"
+
+#: src/Eikazo/output/SaneScanToLpr.py:222
+msgid "Margins"
+msgstr "Ränder"
+
+#: src/Eikazo/output/SaneScanToLpr.py:227
+msgid "top [mm]"
+msgstr "oben [mm]"
+
+#: src/Eikazo/output/SaneScanToLpr.py:241
+msgid "left [mm]"
+msgstr "links [mm]"
+
+#: src/Eikazo/output/SaneScanToLpr.py:255
+msgid "right [mm]"
+msgstr "rechts [mm]"
+
+#: src/Eikazo/output/SaneScanToLpr.py:269
+msgid "bottom [mm]"
+msgstr "unten [mm]"
+
+#: src/Eikazo/output/SaneScanToLpr.py:283
+msgid "Zoom"
+msgstr "Zoom"
+
+#: src/Eikazo/output/SaneScanToLpr.py:306
+msgid "Horizontal Position"
+msgstr "Horizontale Position"
+
+#: src/Eikazo/output/SaneScanToLpr.py:325
+msgid "Print command"
+msgstr "Druckbefehl"
+
+#: src/Eikazo/output/SaneScanToPrint.py:253
+msgid "Print Options"
+msgstr "Druckoptionen"
+
+#: src/Eikazo/Processor.py:435
+msgid "waiting for scan"
+msgstr "warte auf Scan"
+
+#: src/Eikazo/Processor.py:449
+msgid "scanning"
+msgstr "scanne"
+
+#: src/Eikazo/Processor.py:467
+msgid "scanned"
+msgstr "Scan fertig"
+
+#: src/Eikazo/Processor.py:479
+msgid "scan error"
+msgstr "Scanfehler"
+
+#: src/Eikazo/Eikazo.py:80
+#, python-format
+msgid "cannot start a new scan. %i pending scan job(s)"
+msgstr "Kann keinen neuen Scan starten. Bereits %i Jobs gestartet"
+
+#: src/Eikazo/Eikazo.py:240
+msgid ""
+"Main Scan\n"
+"Parameters"
+msgstr ""
+"Scan\n"
+"Parameter"
+
+#: src/Eikazo/Eikazo.py:285 src/Eikazo/Eikazo.py:306
+msgid "Scan"
+msgstr "Scan"
+
+#: src/Eikazo/Eikazo.py:311
+msgid "Delete Job"
+msgstr "Job löschen"
+
+#: src/Eikazo/Eikazo.py:316
+msgid "Retry Job"
+msgstr "Job neu starten"
+
+#: src/Eikazo/Eikazo.py:321
+msgid "Edit Job"
+msgstr "Job bearbeiten"
+
+#: src/Eikazo/Eikazo.py:414
+msgid "Postprocessing"
+msgstr "Nachbearbeitung"
+
+#: src/Eikazo/Eikazo.py:421
+msgid ""
+"Warning: Could not find any output write classes.\n"
+"Please install at least one output writer.\n"
+"Currently you can only view scanned images in this program.\n"
+msgstr ""
+"Warnung: Konnte keine Ausgabe-Klassen finden\n"
+"Bitte installieren Sie mindestens eine Ausgabe-Klasse\n"
+"Im Moment können Sie mit diesem Programm gescanne Bilder\n"
+"nur anschauen\n"
+
+#: src/Eikazo/Eikazo.py:460
+msgid "Output"
+msgstr "Ausgabe"
+
+#: src/Eikazo/Eikazo.py:495 src/Eikazo/Eikazo.py:635
+msgid "_File"
+msgstr "_Datei"
+
+#: src/Eikazo/Eikazo.py:496
+msgid "_Load Configuration"
+msgstr "Konfiguration _Laden"
+
+#: src/Eikazo/Eikazo.py:498
+msgid "_Save Configuration"
+msgstr "Koncifguration _Speichern"
+
+#: src/Eikazo/Eikazo.py:500
+msgid "Save Configuration _As"
+msgstr "Konfigutation speichern _unter"
+
+#: src/Eikazo/Eikazo.py:502
+msgid "_Help"
+msgstr "_Hilfe"
+
+#: src/Eikazo/Eikazo.py:503
+msgid "_About"
+msgstr "_Über"
+
+#: src/Eikazo/Eikazo.py:505
+msgid "_Manual"
+msgstr "_Handbuch"
+
+#: src/Eikazo/Eikazo.py:507
+msgid "_Plugins"
+msgstr "_Plugins"
+
+#: src/Eikazo/Eikazo.py:527 src/Eikazo/Eikazo.py:561
+msgid "Eikazo config files (*.eicfg)"
+msgstr "Eikazo Konfigurationsdateien (*.eicfg)"
+
+#: src/Eikazo/Eikazo.py:543
+#, python-format
+msgid "Can't open file %s"
+msgstr "Kann Datei %s nicht öffnen"
+
+#: src/Eikazo/Eikazo.py:584
+#, python-format
+msgid "Can't save to file %s"
+msgstr "Kann nicht in Datei %s schreiben"
+
+#: src/Eikazo/Eikazo.py:636
+msgid "_Quit"
+msgstr "_Quit"
+
+#: src/Eikazo/Eikazo.py:681
+msgid "no devices found"
+msgstr "Keine Scanner gefunden"
+
+#: src/Eikazo/Help.py:51
+msgid "Eikazo Help"
+msgstr "Eikazo Hilfe"

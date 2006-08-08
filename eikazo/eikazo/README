@@ -1,0 +1,47 @@
+For installation instructions, please see the file INSTALL
+
+
+This package provides Eikazo, a graphical frontend for Sane, which 
+is intended mainly for usage with ADF scanners. It has one major 
+goal: to be fast. 
+
+Features:
+
+- To maximize throughput for ADF scanners, a new scan is started 
+  immediately after a scan has been finished. Postprocessing and
+  saving of the old scan is done, while the new scan is running.
+
+- more than one output per scan possible: You can simultaneously save 
+  the scanned image into a file and send it to a printer.
+
+- plugin mechanisms for special devices features, for post-scan image
+  processing and for other "storage options".
+
+  The device plugin mechanism allows to implement functions to support
+  special device features.
+
+  With image enhancement plugins you can automatically post-process
+  the image. Currently, three plugins exist:
+
+	o adaptive threshold
+	o "dirt removal"
+	o ImageMagick
+
+  The combination of adaptive threshold and dirt removal can give better
+  scan results for "problematic" originals, for example, if you want to
+  extract the text from a paper with "shaded background", from an 
+  stained original, or if you can't reliably predict the density of the
+  ink of the text. See the sample images samples/1.tif (simple fixed 
+  threshold, set in the scanner), samples/2.tif ("automatic threshold" from 
+  another scanner), samples/3.tif (grayscale scan) and samples/4.tif 
+  (adaptive threshold).
+
+  The ImageMagick plugin is probably not very useful in many cases;
+  some of the provided options are procesed _very_ slow -- in short: 
+  it is mostly intended to show how to integrate an external image
+  filter than to be directly useful. 
+
+planned extensions and plugins:
+
+- deskewing
+- sample plugin: SQL database.

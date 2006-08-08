@@ -1,0 +1,9 @@
+The files in the directory are not part of Eikazo. They are
+patched versions of PIL's Sane module. The patches will
+probably be included in PIL 1.1.6.
+
+copy the file in this directory into the subdirectory Sane
+of the PIL source tree; then run "python setup.py build" and 
+"python setup.py install" in the Sane subdirectory to install
+PIL's Sane module.
+

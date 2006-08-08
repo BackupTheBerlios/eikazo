@@ -1,0 +1,42 @@
+
+To install this package, run::
+
+	python setup.py build
+
+and (with root privileges)::
+
+	python setup.py install
+
+Before you do this, make sure that the following programs / libraries
+are installed on your system:
+
+  - `Python <http://www.python.org>`_
+  - Python's distutils and the Python development package
+  - a C compiler (gcc most probably)
+  - `SANE <http://sane-project.org/>`_ 
+  - `PyGTK <http://www.pygtk.org>`_ (in some Linux distributions called python-gtk)
+  - `Python Imaging Library <http://www.pythonware.com/products/pil/index.htm>`_ (PIL)
+    
+    In some Linux distributions, PIL's Sane libraries are not
+    part of the default PIL package.
+    In this case you must install PIL's Sane module manually from
+    the source files. Either download the sources from the 
+    pythonware website, or install the sources that hopefully came 
+    with your operating system.
+    
+    To install the Sane module, run ``python setup.py build`` and
+    ``python setup.py install`` **directly** in the Sane subdirectory. 
+	
+
+For PIL, the usage of a patched version of its source files Sane/_sane.c 
+and Sane/sane.py is strongly recommended. The patched files are located 
+in the directory PIL in this package. The patch allows the Python interpreter 
+to run other threads, while one thread reads data from a scanner. Without 
+this patch, the thread controlling the program's GUI and and other threads
+which process the data of already scanned images are blocked until the 
+scan is finished. The patch will probably be included in version 1.1.6 of 
+PIL (http://effbot.python-hosting.com/ticket/50).
+
+Additionally, the files in the directory PIL have patches which improve 
+support for duplex ADF scanners and fix for a possible buffer overflow. 
+(The former patch is already included in the alpha versions of PIL 1.1.6)

@@ -1,0 +1,120 @@
+information about specific features provided by some scanner models.
+To be used by a frontend to provide special widgets or to implement
+a scan start, if a scanner button is pressed.
+
+Also, a Sane backend could theoretically suppress those options that are
+not available in a specific scanner, or only as and add-on (transparency
+unit, imprinter etc), but in pratice most backend simply set these
+options to disabled. So we need our own way to decide, which option
+is "worth" to be displayed and which not.
+
+Each source file can specify one or more classes of the following type:
+
+class Scanner:
+    def vendor_names(self):
+    	""" return alist of vendor names as used by Sane that this 
+    	    class knows about.
+    	    xxx usefulness is a bit questionable. Some backends just 
+    	    check, if model and vendor name contain a substring, without 
+    	    caring about the position of the substring. Using
+    	    such a "lax" decision everywhere can be a bit risky
+    	"""
+    
+    def model_names(self):
+    	""" return a list of model names as used by Sane that this 
+    	    class knows about
+    	"""
+    
+    def options(self, devicename):
+    	""" return a list of Sane device options (names with underscores
+    	    as used by the PIL's sane module, _not_ the original
+    	    names with '-' as provided by most Sane backends) that
+    	    represent a "pushbutton" or other input "gadget" that the user
+    	    may use.
+    	    
+    	    If a class does not know anything about a device, this
+    	    method returns None.
+    	    
+    	    devicename is the device name as returned by sane.get_devices()
+    	    
+    	    Especially important is the option to start scans
+    	    
+    	    A list entry is a dictionary:
+    	    
+    	    {'name': sane_option_name,
+    	     'type': type_name,
+    	     'usage': usage,
+    	     'widget': widget
+    	    }
+    	    
+    	    name: if type is "button", "selection", "info", name is the
+    	      name of an option  provided by the backend,
+    	      For type "cap", the name identifies a special capability
+    	      of the scanner. For now, only overscan is defined.
+    	    
+    	    type: may be "button", "selection", "info", "cap"
+    	      button is a pushbutton or similar that the user can press
+    	      selection: the user can choose between several values.
+    	        The Fujitsu fi5120 for example provides a 7-segment
+    	        display, where the uzser can select a number between 1
+    	        and 9
+    	    
+    	    usage: 
+    	      For all options except 'cap', may be None (Python value None). 
+    	      This allows to suppress options of a Sane device which are 
+    	      "dead". For example, many Fujitsu scanners provide a 
+    	      command "get hardware status"; this command returns many 
+    	      interesting informations, but not every model provies
+    	      real data. The fi5120c for example does not provide
+    	      paper size information, hence it is pointless to display
+    	      Sane options like "button-a4".
+    	      For type button: a string from ("scan", "copy", "email")
+    	         (this list could probably be extended...)
+    	         scan: start an ordinary scan; the scan data is stored in
+      	               file
+      	         copy: "copier function": print the scan data on a printer
+      	         email: send an email
+      	         xxx alternatively: a class instance that emits an event, if
+      	         the button is pressed. To get "good" status information
+      	         and "sensitive" buttons, we'll need anyway a thread
+      	         which polls status information periodically. So all
+      	         such a class needs to do is to tie together the
+      	         device status and an event.
+      	         
+    	      for type selection: no idea yet...
+    	      for type info: no idea yet. Something like error info,
+    	        status info, more or less important stuff 
+    	        examples: ADF loaded: status info. Could also be
+    	        used to enable/disable the "Scan" button
+    	        "OMR or DF": display an error message
+    	      
+    	      for type cap, an CapDescriptor class (NOT an instance!)
+    	    widget: None, or a reference to a class, whose instances
+    	      can be used in Eikazo to display the option.
+    	    
+    	"""
+
+class CapDescriptor:
+    def replaces(self):
+        """ returns a list of device options controlled by widgets
+            implementing this capability. These options should be
+            hidden by the frontend
+        """
+    
+    def widgets(self, device):
+    	""" device is a SaneDevice instance.
+            returns a list of tuples, where a tuple contains
+            (name, (group, widget))
+            
+            name is a string with the name of the option;
+            group is a string describing the group where the option
+            should be placed, widget is GTK Widget implementing
+            the option.
+            
+            "well-known" group names: 'main', 'eikazo_status'
+    	"""
+    
+class CapWidget:
+    """ must implement the methods Reload and enable_option the same
+        way as the widget classes in Widgets.py do
+    """
