@@ -1,0 +1,8 @@
+2006-08-21	Otsu threshold added
+		SaneScanToLpr: added numCopies option
+		Duplex handling: class ScanJob now knows "internally",
+		  if the frontside or backside of a page is scanned;
+		  paranoia check: the duplex state of the backend is reset 
+		  before a frontside scan. 
+		Scan rotation added. Independent rotation options for
+		  frontside and backside in duplex mode.
