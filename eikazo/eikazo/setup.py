@@ -12,7 +12,7 @@ for dir in os.listdir('Eikazo/mo'):
 
 
 setup(name='Eikazo',
-           version='0.3',
+           version='0.4',
            author='Abel Deuring',
            author_email='adeuring@gmx.net',
            license = 'GPL',
