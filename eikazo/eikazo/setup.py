@@ -30,6 +30,10 @@ setup(name='Eikazo',
            ext_modules = [Extension('_meanFilter',
                                     ['cext/MeanFilter.c'],
                                     extra_compile_args=['-Wall'],
-                                   )
+                                   ),
+                          Extension('otsu',
+                                    ['cext/Otsu.c'],
+                                    extra_compile_args=['-Wall'],
+                                   ),
                          ]
      )

@@ -6,3 +6,4 @@
 		  before a frontside scan. 
 		Scan rotation added. Independent rotation options for
 		  frontside and backside in duplex mode.
+2006-09-21	setup.py: added missing Otsu module
