@@ -71,7 +71,7 @@ _seqattr = ('scanwindow',)
 # attributes that are copied by value or reference, in the constructor call
 _refattr = ('orig_id', 'copies', 'owner')
 # attributes thay may exist and that can be copied by value:
-_simpleattr = ('resolution', 'y_resolution')
+_simpleattr = ('resolution', 'y_resolution', 'duplex_status_backside')
 # unique/independed attributes
 _uniqattr = ('id', 'status', 'active', 'deleted')
 _jobattr = _deepcopyattr + _seqattr + _refattr + _simpleattr + _uniqattr
@@ -435,14 +435,34 @@ class SaneScannerControl(SaneThreadingQueueingProcessor, SaneInputProducer):
         self.errorjobs = []
         self.start()
         self.status = 0 # idle
+        # track the "duplex status": We must know, if the next
+        # scan will be a backside duplex scan
+        self.duplex_scanner_status_backside = False
+        # ... and if the next queued job will be a backside scan
+        self.duplex_input_backside = False
+        # debugging: check, if restarting a backside scan in duplex
+        # mode works. Set to True for to force an error
+        self.TEST = False
     
     def can_append(self, job):
         return SaneThreadingQueueingProcessor.can_append(self, job) and not self.errorjobs
     
     def append(self, job):
+        job.duplex_status_backside = self.duplex_input_backside
         SaneThreadingQueueingProcessor.append(self, job)
+        if self.device.duplex_mode():
+            self.duplex_input_backside = not self.duplex_input_backside
         job.status['scan'] = _('waiting for scan')
         self.notify('new job', job)
+    
+    def reset_duplex(self, input):
+        """ reset the duplex status. If input is True, reset both
+            duplex_input_backside and duplex_scanner_status_backside,
+            else only duplex_scanner_status_backside
+        """
+        self.duplex_scanner_status_backside = False
+        if input:
+            self.duplex_input_backside = False
     
     def run(self):
         while not self.abort:
@@ -465,10 +485,58 @@ class SaneScannerControl(SaneThreadingQueueingProcessor, SaneInputProducer):
                         job.y_resolution = self.device._device.y_resolution
                     else:
                         job.y_resolution = self.device._device.resolution
+                    
+                    if self.TEST and self.duplex_scanner_status_backside:
+                        # xxx test: force an error to see, if requeueing a
+                        # a backside job works as expected
+                        self.TEST = False
+                        raise "duplex requeueing test"
+                        
+                    # paranoia: make sure that the duplex status of the scanner
+                    # stays synchronous with the status as "thought of" by this
+                    # class. Unfortunately, the Sane standard has no way to
+                    # tell for duplex scanners, if the next start()/snap() calls
+                    # will deliver front side or back side data, neither 
+                    # provides any backend for duplex scanners an option 
+                    # that would allow to get the actual scanner status.
+                    # So let's "reset" the backend before each frontside 
+                    # scan. A sane_cancel flushes possibly buffered 
+                    # "back side data"
+                    if not self.duplex_scanner_status_backside:
+                        self.device._device.cancel()
+                    
+                        # now we may have the (admittedly unlikely) situation
+                        # that a job for backside data is requeued, without the
+                        # corresponding front side job being requeued. Not all
+                        # backends for duplex scanners support backside-only
+                        # scans, so we start the frontside scan too, but omit 
+                        # the data
+                        if job.duplex_status_backside:
+                            print "dropping front side data"
+                            self.device._device.start()
+                            self.duplex_scanner_status_backside = \
+                                not self.duplex_scanner_status_backside
+                            # no check, if no_cancel is supported:
+                            # duplex scans are reasonable only for PIL.sane
+                            # version that DO support this mode.
+                            junk = self.device._device.snap(no_cancel=1)
+                            junk.save('TEST.tif')
+                    
+                    # we must call this before sane_start, because 
+                    # not all backends allow to read an option AFTER
+                    # a scan has been started.
+                    in_duplex_mode = self.device.duplex_mode()
+
                     self.device._device.start()
+
+                    if in_duplex_mode:
+                        self.duplex_scanner_status_backside = \
+                            not self.duplex_scanner_status_backside
                     # FIXME: terrible workaround...
-                    # We want to use the no_cacnel options, but it is
+                    # We want to use the no_cancel option, but it is
                     # no everywhere available: a quite recent bugfix
+                    # -> "enforce" usage of sufficiently recent version
+                    # of the sane module??
                     try:
                         img = self.device._device.snap(no_cancel=1)
                     except TypeError, val:
@@ -533,7 +601,14 @@ class SaneScannerControl(SaneThreadingQueueingProcessor, SaneInputProducer):
                 res = True
                 break
         self.queuelock.release()
+        self.reset_duplex(False)
         return res
+    
+    def delete_job(self, job):
+        # reset the duplex status. Otherwise, the duplex logic will
+        # out of sync
+        self.reset_duplex(True)
+        SaneThreadingQueueingProcessor.delete_job(self, job)
     
     def can_retry(self, job):
         """ check, if a job in error status can be re-queued

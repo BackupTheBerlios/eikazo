@@ -23,7 +23,7 @@ from Eikazo.SaneError import SaneError
 from Eikazo import I18n, Config, Processor, Plugins
 import outputinfo
 
-DEBUG = 0
+DEBUG = os.getenv("EIKAZO_DEBUG")
 
 t = I18n.get_translation('eikazo')
 if t:
@@ -372,9 +372,9 @@ class ScanToFile(outputinfo.OutputProvider):
         self.fcincfield.set_increments(1,1)
         self.fcincfield.connect("value-changed", self.cb_incr)
         
-        self.fmtlabel = gtk.Label(_("file format"))
-        self.hboxfnum.pack_start(self.fmtlabel, expand=False)
-        self.fmtlabel.show()
+        #self.fmtlabel = gtk.Label(_("file format"))
+        #self.hboxfnum.pack_end(self.fmtlabel, expand=False)
+        #self.fmtlabel.show()
         
         self.filefilters = []
         for name, pattern in [(x.name, x.pattern) for x in _fileformats]:
@@ -403,9 +403,13 @@ class ScanToFile(outputinfo.OutputProvider):
                 active = i
             i += 1
         self.fmt.set_active(active)
-        self.hboxfnum.pack_start(self.fmt, expand=False)
+        self.hboxfnum.pack_end(self.fmt, expand=False)
         self.fmt.show()
         self.fmt.connect("changed", self.fmt_changed)
+        
+        self.fmtlabel = gtk.Label(_("file format"))
+        self.hboxfnum.pack_end(self.fmtlabel, expand=False)
+        self.fmtlabel.show()
         
         self.saveInfoStore = gtk.ListStore(str, str, str, str)
 
@@ -465,7 +469,7 @@ class ScanToFile(outputinfo.OutputProvider):
         if test:
             self.filename_warning(test)
     
-    def fnbrowse_click(self, w):
+    def _fnbrowse_click(self, w, strict):
         dlg = gtk.FileChooserDialog(_("Select filename..."), None, 
                   gtk.FILE_CHOOSER_ACTION_SAVE, 
                   (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, 
@@ -489,7 +493,8 @@ class ScanToFile(outputinfo.OutputProvider):
             test = self.set_filename(filename)
             if test:
                 self.filename_warning(test)
-            self.fnfield.set_text(dlg.get_filename())
+            if not strict or not test:
+                self.fnfield.set_text(dlg.get_filename())
             filter = dlg.get_filter()
             if filter:
                 name = filter.get_name()
@@ -500,6 +505,9 @@ class ScanToFile(outputinfo.OutputProvider):
                     
         dlg.destroy()
 
+    
+    def fnbrowse_click(self, w):
+        self._fnbrowse_click(w. False)
     
     def fmt_changed(self, w):
         i = self.fmt.get_active()
@@ -536,16 +544,18 @@ class ScanToFile(outputinfo.OutputProvider):
         self.incr = incr
         self.fcincfield.set_value(incr)
     
-    def get_jobdata(self):
+    def get_jobdata(self, job):
         if self.use_number:
             res = self.filename % self.filecounter
             self.filecounter += self.incr
             self.fcfield.set_value(self.filecounter)
+            job.filename = res
             return res
+        job.filename = self.filename
         return self.filename
     
     def save(self, job):
-        fname = self.get_jobdata()
+        job.filename = fname = self.get_jobdata(job)
         format = self.formatwidgets[self.get_fileformat()]
         format.save(job.img, fname, job.resolution, job.y_resolution)
 

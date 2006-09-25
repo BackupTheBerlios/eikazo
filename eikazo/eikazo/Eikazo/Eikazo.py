@@ -228,7 +228,7 @@ class DeviceControl:
                         optbox.attach(w, hpos, hpos+1, pos, pos+1,
                                       xoptions=gtk.FILL|gtk.EXPAND, yoptions=gtk.FILL,
                                       xpadding=0, ypadding=0)
-                    if t == 'hscale':
+                    if t == 'hscale' and w.__class__ == Widgets.HScale:
                         w.set_draw_value(False)
                     w.show()
                     hpos += 1

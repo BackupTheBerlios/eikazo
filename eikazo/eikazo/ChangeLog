@@ -1,3 +1,13 @@
+2006-09-25	Sample output plugin added, which stores some basic
+		information about scans in an SQL table.
+
+2006-09-21	Eikazo/Widgets.py, Eikazo/Eikazo.py: bug fixed. 
+  		  Options in the main option group that are preferably
+		  displayed as HScale instances can now also be drop down
+		  lists without raising an error.
+
+2006-09-21	setup.py: added missing Otsu module
+
 2006-08-21	Otsu threshold added
 		SaneScanToLpr: added numCopies option
 		Duplex handling: class ScanJob now knows "internally",
@@ -6,4 +16,3 @@
 		  before a frontside scan. 
 		Scan rotation added. Independent rotation options for
 		  frontside and backside in duplex mode.
-2006-09-21	setup.py: added missing Otsu module

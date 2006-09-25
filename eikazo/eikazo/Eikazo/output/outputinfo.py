@@ -97,6 +97,15 @@ class OutputProvider(Config.ConfigAware):
                 self.processor.set_input(None)
                 self.name_label_icon.set_from_stock(gtk.STOCK_CANCEL, 1)
     
+    def activate(self, v):
+        """ - toggle "sensitiveness" of self.connect_widget
+            - enable/disable this output provider
+        """
+        self.connect_widget.set_sensitive(v)
+        if not v:
+            self.enable_input(v)
+        
+    
     def readConfig(self):
         val = self.config.getboolean('output', '%s-connected' % self.name)
         if val != None:

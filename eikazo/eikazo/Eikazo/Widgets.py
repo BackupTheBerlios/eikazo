@@ -440,18 +440,27 @@ class SaneDevice(gobject.GObject):
             
             constr = opt.constraint
 
-            if opt.size > 1:
-                if type(constr) == type(()):
-                    res = SaneCurve(optname, self, config, **kw)
-                elif type(constr) == type([]):
-                    # FIXME: might be reasonable to build a table of
-                    # choiceboxes for shorter lists
-                    print "can't build a widget for a float/integer list with selection constraint"
-                    return None
-                else:
-                    # hrmm. What to do here?
-                    print "can't build a widget for a float/integer list without constraint"
-                    return None
+            # FIXME: the sane module returns the option size as specified
+            # by the backend, i.e., for SANE_Word, SANE_Int in multiples
+            # of sizeof(SANE_Word). This is not of much value in Python:
+            # here, we don't know the value of sizeof(SANE_Word).
+            # we need a function in the C extension that tells us the
+            # size.
+            if 0:
+                if opt.size > 1:
+                    if type(constr) == type(()):
+                        print "xxx cCURVES DISABLED"
+                        return None
+                        res = SaneCurve(optname, self, config, **kw)
+                    elif type(constr) == type([]):
+                        # FIXME: might be reasonable to build a table of
+                        # choiceboxes for shorter lists
+                        print "can't build a widget for a float/integer list with selection constraint"
+                        return None
+                    else:
+                        # hrmm. What to do here?
+                        print "can't build a widget for a float/integer list without constraint"
+                        return None
             
             elif type(constr) == type(()):
                 minValue = constr[0]
@@ -591,6 +600,7 @@ class SaneDevice(gobject.GObject):
     
     def adf_mode(self):
         """ check, if an ADF is available and selected
+            returns or True or False
         """
         # FIXME: is the list of possible strings which "indicate" an
         # ADF complete or not??
@@ -599,22 +609,104 @@ class SaneDevice(gobject.GObject):
         # That's not, what we want... I don't see another way to detect
         # an ADF, and if it is enabled, except from the 'source' option...
         # A candidate from this case is for example the fi-5110
-        # PROBLEM: PIL's Sane module is a bit too picky: If an option
-        # is inactive, we can't access its value: an exception is raised
-        # As I understand the Sane standard, an inanctive option should
-        # nevertheless be readable...
+        # PROBLEM: We can't read inactive options...
+        
+        # grepping the Sane backend sources, the following ways exist
+        # to select and detect an ADF:
+        #
+        # option source has one of the values:
+        #   'ADF'                       (avision, hp, microtek2, sp15c)
+        #   'ADF Rear'                  (avision)
+        #   'ADF Duplex'                (avision, fujitsu)
+        #   'ADF Front'                 (fujitsu)
+        #   'ADF Back'                  (fujitsu)
+        #   'Automatic Document Feeder' (bh, epson, mustek, nec, pixma,
+        #                                sharp, umax)
+        #   'Document Feeder'           (snapscan)
+        #   'Filmstrip'                 (microtek2)
+        #     I'm not 100% sure about Filmstrip, but it could make sense
+        #     to treat it similary to an ADF
+        #
+        # bool option 'adf': artec, ibm
+        # bool option 'noadf': canon
+        # string option 'feeder-mode', value 'All Pages': matsushita
+        #
+        # FIXME: The backends plustek, ma1509, matsushita seem to support
+        # ADFs too, but I could not figure out, how these can be detected
+        # The plustek backend perhaps uses the device type string
+        # 'USB sheet-fed scanner', and the matsushita backend uses the
+        # device type string 'sheetfed scanner'.
+        # The ma1509 describes itself as a 'flatbed scanner', so there
+        # seems to be no way to dicover, if an ADF is used or installed...
+        
+        
+        optnames = self.getOptionNames()
         try:
-            if 'source' in self.getOptionNames():
+            if 'source' in optnames:
                 source = self._device.source
-                for test in ('ADF', 'Automatic Document Feeder'):
+                for test in ('ADF', 'Document Feeder'):
                     if source.find(test) >= 0:
                         return True
         except AttributeError, errval:
             if str(errval) == 'Inactive option: source':
                 return False
             raise
-        return False
         
+        if 'adf' in optnames:
+            try:
+                return self._device.adf
+            except AttributeError, errval:
+                if str(errval) == 'Inactive option: adf':
+                    return False
+                raise
+        elif 'noadf' in optnames:
+            try:
+                return not self._device.noadf
+            except AttributeError, errval:
+                if str(errval) == 'Inactive option: noadf':
+                    return False
+                raise
+        elif 'feeder_mode' in optnames:
+            try:
+                return self._device.feeder_mode == 'All Pages'
+            except AttributeError, errval:
+                if str(errval) == 'Inactive option: adf':
+                    return False
+                raise
+        return False
+
+    def duplex_mode(self):
+        """ returns true, if the scanner is in ADF mode and if
+            duplex scans are enabled (if possible)
+        """
+        if not self.adf_mode():
+            return False
+        optnames = self.getOptionNames()
+        if 'source' in optnames:
+            # avision, fujitsu
+            try:
+                return self._device.source == 'ADF Duplex'
+            except AttributeError, errval:
+                if str(errval) == 'Inactive option: source':
+                    return False
+                raise
+        elif 'duplex' in optnames:
+            # bh
+            try:
+                return self._device.duplex
+            except AttributeError, errval:
+                if str(errval) == 'Inactive option: duplex':
+                    return False
+                raise
+        elif 'adf_mode' in optnames:
+            # epson
+            try:
+                return self._device.adf_mode == 'Duplex'
+            except AttributeError, errval:
+                if str(errval) == 'Inactive option: adf_mode':
+                    return False
+                raise
+        return False
         
 gobject.signal_new("sane-geometry", SaneDevice, 
                    gobject.SIGNAL_RUN_FIRST | gobject.SIGNAL_ACTION,
