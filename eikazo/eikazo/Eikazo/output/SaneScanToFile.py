@@ -204,7 +204,12 @@ class JpegFormatOptions(FormatOptions, gtk.HBox, Config.ConfigAware):
     def save_options(self, resolution, y_resolution):
         if y_resolution == None:
             y_resolution = resolution
-        res = {}
+        # other supported keys: optimize, smooth, streamtype, progressive
+        res = {'dpi':      [resolution, y_resolution],
+               'quality':      self.quality,
+              }
+        
+        
         return res
     
     def readConfig(self):
