@@ -69,7 +69,7 @@ if enable_plugin:
         have_pg = 0
         pg_import = str(val)
     
-    if not have_pg:
+    if not have_pg and 0: # FIXME: not yet tested
         try:
             import psycopg as pgdb
             have_pg = 1

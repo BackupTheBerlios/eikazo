@@ -41,7 +41,21 @@ Features:
   it is mostly intended to show how to integrate an external image
   filter than to be directly useful. 
 
+  Eikazo has at present three output plugins:
+
+    - write to file. supported file formats: TIFF and JPEG
+    - print
+    - write to file and record some informations about the scans in an
+      SQL database. This plugin is probably not very useful by itself --
+      what information abouts scans should be stored in a database, 
+      depends on specific use cases. The plugin is mainly intended to be 
+      an example that shows how Eikazo can be extended. It is by default 
+      disabled in order to keep the user interface simple. If you want to
+      try the plugin, run eikazo with the environment variable
+      EIKAZO_SQLSAMPLE set to 1. 
+      The plugin supports MySQL and PostgreSQL.
+      
+
 planned extensions and plugins:
 
 - deskewing
-- sample plugin: SQL database.

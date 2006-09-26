@@ -26,7 +26,11 @@ are installed on your system:
     
     To install the Sane module, run ``python setup.py build`` and
     ``python setup.py install`` **directly** in the Sane subdirectory. 
-	
+  - To try the SQLSample output plugin, you must install or have access to 
+    a MySQL or PostgreSQL database; the Python modules 
+    `MySQLdb <http://sourceforge.net/projects/mysql-python>`_  by Andy
+    Dustman and/or `PyGreSQL <http://pygresql.org/>`_ by Pascal Andre 
+    and D'Arcy J.M. Cain must be installed.
 
 For PIL, the usage of a patched version of its source files Sane/_sane.c 
 and Sane/sane.py is strongly recommended. The patched files are located 
