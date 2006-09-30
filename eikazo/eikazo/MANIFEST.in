@@ -4,6 +4,7 @@ include INSTALL
 include Eikazo/po/*.po
 include Eikazo/po/*.pot
 recursive-include Eikazo/mo *.mo
+include Eikazo/version.txt
 include Eikazo/doc/*.rst
 include Eikazo/doc/*.html
 include Eikazo/doc/images/*
