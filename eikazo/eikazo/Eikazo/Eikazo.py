@@ -114,19 +114,34 @@ class DeviceControl:
                  'pagewidth', 'pageheight', 'overscan'
                 ]
 
-    _mainOptWTypes = {'source':     ('choice', ),
-                      'mode':       ('choice', ),
-                      'tl_x':       ('hscale', 'number field', ),
-                      'br_x':       ('hscale', 'number field', ),
-                      'tl_y':       ('hscale', 'number field', ),
-                      'br_y':       ('hscale', 'number field', ),
-                      'resolution': ('hscale', 'number field'),
-                      'y_resolution': ('hscale', 'number field'),
-                      'pagewidth':  ('hscale', 'number field'),
-                      'pageheight': ('hscale', 'number field'),
-                      }
+    # The Sane option constraints are represented in the PIL Sane
+    # module as:
+    # None  -> no constraint;
+    # tuple -> range constraint
+    # list  -> selection list
+    # Some scanners allow for example only a fixed list of resolutions, so 
+    # we need to be able to deal with all types of constraints.
+    
+    
+    _num_constrmap = { type(None): ('number field', ),
+                      type([]):   ('choice', ),
+                      type(()):   ('hscale', 'number field'),
+                    }
+    
+    _default_map = { type(None): ('default', ),
+                   }
 
-
+    _mainOptWTypes = {
+        Widgets.SANE_TYPE_BOOL:   _default_map,
+        Widgets.SANE_TYPE_INT:    _num_constrmap,
+        Widgets.SANE_TYPE_FIXED:  _num_constrmap,
+        Widgets.SANE_TYPE_STRING:  { type(None): ('string field', ),
+                                     type([]):   ('choice', ),
+                                   },
+        Widgets.SANE_TYPE_BUTTON:  _default_map,
+        Widgets.SANE_TYPE_GROUP:   { type(None): (), 
+                                   },
+    }
     
     def __init__(self, device, config, notify_hub):
         self.device = device
@@ -212,7 +227,9 @@ class DeviceControl:
                     w.show()
                     hpos += 1
             else:
-                for t in self._mainOptWTypes[opt]:
+                otype = optinfo[opt][4]
+                constr = optinfo[opt][8]
+                for t in self._mainOptWTypes[otype][type(constr)]:
                     w = device.createOptionWidget(opt, self.config, t)
                     if hpos == 1:
                         l = w.titleWidget()

@@ -1,3 +1,12 @@
+2006-10-01	Widgets.py: SaneDevice.getMaxScanArea now does not
+		raise an error, if the Sane backend does not provide the
+		options tl-x, br-x, tl-y, br-y
+		Preview.py: ditto
+		Widgets.py: typo in a variable name fixed
+
+2006-10-01	Eikazo.py: improved selection of the widget types
+		generated for the main scanner options.
+
 2006-09-26	version 0.5 released
 
 2006-09-25	Sample output plugin added, which stores some basic

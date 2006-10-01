@@ -582,7 +582,19 @@ class SaneDevice(gobject.GObject):
                 if found == 31: break
         
         if (found & 15) != 15:
-            raise EikazoWidgetError("Sane backend does not provide scan window size")
+            # the backend does not provide at least some parameters
+            # of the scan area. example: camera backends. This means that
+            # the scan window can not be set, and the scan siz can be
+            # retrieved by calling get_parameters. FIXME: This is not
+            # necessarily true: A counter example would be a backend
+            # which allows to set the paper size but not tl_x, br_x etc
+            
+            format, last_frame, (ppl, lines), depth, bpl \
+                = self._device.get_parameters()
+            
+            self._scanarea = (0, ppl, 0, lines)
+            return self._scanarea
+        
         
         if resol:
             resol = self._device.resolution
@@ -721,7 +733,7 @@ gobject.signal_new("sane-reload-params", SaneDevice,
 def _millimeters(val, opt, resol):
     if opt[5] == SANE_UNIT_MM:
         return val
-    elif opt[5] == SANE_UNIT_PIXEL and resolOpt:
+    elif opt[5] == SANE_UNIT_PIXEL and resol:
         # well, we don't have a warranty that the scanner provides the
         # resolution in DPI units, but everthing else would be really pointless..
         return 25.4 * val / resol

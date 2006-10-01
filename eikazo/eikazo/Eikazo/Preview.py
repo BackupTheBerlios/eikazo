@@ -121,25 +121,30 @@ class SanePreview(gtk.Alignment):
             lambda ruler, event: ruler.emit("motion_notify_event", event),
             self.hruler)
         
-        self.tlxscale = device.createOptionWidget('tl_x', config, 'hscale')
-        self.tlxscale.set_property('draw-value', False)
-        self.table.attach(self.tlxscale, 2, 3, 1, 2, gtk.EXPAND|gtk.FILL, 0, 0, 0)
-        self.tlxscale.show()
+        optnames = device.getOptionNames()
+        if 'tl_x' in optnames:
+            self.tlxscale = device.createOptionWidget('tl_x', config, 'hscale')
+            self.tlxscale.set_property('draw-value', False)
+            self.table.attach(self.tlxscale, 2, 3, 1, 2, gtk.EXPAND|gtk.FILL, 0, 0, 0)
+            self.tlxscale.show()
         
-        self.brxscale = device.createOptionWidget('br_x', config, 'hscale')
-        self.brxscale.set_property('draw-value', False)
-        self.table.attach(self.brxscale, 2, 3, 4, 5, gtk.EXPAND|gtk.FILL, 0, 0, 0)
-        self.brxscale.show()
+        if 'br_x' in optnames:
+            self.brxscale = device.createOptionWidget('br_x', config, 'hscale')
+            self.brxscale.set_property('draw-value', False)
+            self.table.attach(self.brxscale, 2, 3, 4, 5, gtk.EXPAND|gtk.FILL, 0, 0, 0)
+            self.brxscale.show()
         
-        self.tlyscale = device.createOptionWidget('tl_y', config, 'vscale')
-        self.tlyscale.set_property('draw-value', False)
-        self.table.attach(self.tlyscale, 0, 1, 3, 4, 0, gtk.EXPAND|gtk.FILL, 0, 0)
-        self.tlyscale.show()
+        if 'tl_y' in optnames:
+            self.tlyscale = device.createOptionWidget('tl_y', config, 'vscale')
+            self.tlyscale.set_property('draw-value', False)
+            self.table.attach(self.tlyscale, 0, 1, 3, 4, 0, gtk.EXPAND|gtk.FILL, 0, 0)
+            self.tlyscale.show()
         
-        self.bryscale = device.createOptionWidget('br_y', config, 'vscale')
-        self.bryscale.set_property('draw-value', False)
-        self.table.attach(self.bryscale, 3, 4, 3, 4, 0, gtk.EXPAND|gtk.FILL, 0, 0)
-        self.bryscale.show()
+        if 'br_y' in optnames:
+            self.bryscale = device.createOptionWidget('br_y', config, 'vscale')
+            self.bryscale.set_property('draw-value', False)
+            self.table.attach(self.bryscale, 3, 4, 3, 4, 0, gtk.EXPAND|gtk.FILL, 0, 0)
+            self.bryscale.show()
         
         self.connect("size-allocate", self.alloc_childs)
         self.hruler.connect("size-request", self.get_hruler_height, 0)
