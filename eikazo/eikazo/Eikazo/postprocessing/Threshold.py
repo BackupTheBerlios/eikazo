@@ -143,7 +143,6 @@ values for the offset are 4% .. 8%
                 self.offsadj.set_value(val)
     
         def writeConfig(self):
-            procinfo.ProcessingProvider.writeConfig(self)
             self.config.set('postprocessing', 'adaptivethreshold-size',
                             str(self.averageSize))
             self.config.set('postprocessing', 'adaptivethreshold-offset',

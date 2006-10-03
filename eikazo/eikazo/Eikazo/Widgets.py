@@ -21,7 +21,10 @@ provides PyGTK based widgets which control sane backends
 
 import sys, os
 import threading
-import sane
+if os.getenv('SANE_DISABLE_OPTIONS'):
+    import sanedebug as sane
+else:
+    import sane
 import gtk, gobject
 import Config, I18n, Curve
 

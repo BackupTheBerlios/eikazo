@@ -110,50 +110,53 @@ class SanePreview(gtk.Alignment):
         self.vruler.set_range(tly, bry, 10, 0)
         self.table.attach(self.vruler, 1, 2, 3, 4, 0, gtk.EXPAND|gtk.FILL, 0, 0)
         self.vruler.show()
-        self.preview.connect_object("motion_notify_event", 
-            lambda ruler, event: ruler.emit("motion_notify_event", event),
-            self.vruler)
+        
+        optnames = device.getOptionNames()
+        can_set_window =     'tl_x' in optnames and 'tl_y' in optnames \
+                        and 'br_x' in optnames and 'br_y' in optnames
+        
+        if can_set_window:
+            self.preview.connect_object("motion_notify_event", 
+                lambda ruler, event: ruler.emit("motion_notify_event", event),
+                self.vruler)
         self.hruler = gtk.HRuler()
         self.hruler.set_range(tlx, brx, 10, 0)
         self.table.attach(self.hruler, 2, 3, 2, 3, gtk.EXPAND|gtk.FILL, 0, 0, 0)
         self.hruler.show()
-        self.preview.connect_object("motion_notify_event", 
-            lambda ruler, event: ruler.emit("motion_notify_event", event),
-            self.hruler)
+
+        if can_set_window:
+            self.preview.connect_object("motion_notify_event", 
+                lambda ruler, event: ruler.emit("motion_notify_event", event),
+                self.hruler)
         
-        optnames = device.getOptionNames()
-        if 'tl_x' in optnames:
             self.tlxscale = device.createOptionWidget('tl_x', config, 'hscale')
             self.tlxscale.set_property('draw-value', False)
             self.table.attach(self.tlxscale, 2, 3, 1, 2, gtk.EXPAND|gtk.FILL, 0, 0, 0)
             self.tlxscale.show()
+            self.tlxscale.connect("size-request", self.get_hruler_height, 1)
         
-        if 'br_x' in optnames:
             self.brxscale = device.createOptionWidget('br_x', config, 'hscale')
             self.brxscale.set_property('draw-value', False)
             self.table.attach(self.brxscale, 2, 3, 4, 5, gtk.EXPAND|gtk.FILL, 0, 0, 0)
             self.brxscale.show()
+            self.brxscale.connect("size-request", self.get_hruler_height, 2)
         
-        if 'tl_y' in optnames:
             self.tlyscale = device.createOptionWidget('tl_y', config, 'vscale')
             self.tlyscale.set_property('draw-value', False)
             self.table.attach(self.tlyscale, 0, 1, 3, 4, 0, gtk.EXPAND|gtk.FILL, 0, 0)
             self.tlyscale.show()
+            self.tlyscale.connect("size-request", self.get_vruler_width, 1)
         
-        if 'br_y' in optnames:
             self.bryscale = device.createOptionWidget('br_y', config, 'vscale')
             self.bryscale.set_property('draw-value', False)
             self.table.attach(self.bryscale, 3, 4, 3, 4, 0, gtk.EXPAND|gtk.FILL, 0, 0)
             self.bryscale.show()
+            self.bryscale.connect("size-request", self.get_vruler_width, 2)
         
         self.connect("size-allocate", self.alloc_childs)
         self.hruler.connect("size-request", self.get_hruler_height, 0)
-        self.tlxscale.connect("size-request", self.get_hruler_height, 1)
-        self.brxscale.connect("size-request", self.get_hruler_height, 2)
         self.limitDisplaySize.connect("size-request", self.get_hruler_height, 3)
         self.vruler.connect("size-request", self.get_vruler_width, 0)
-        self.tlyscale.connect("size-request", self.get_vruler_width, 1)
-        self.bryscale.connect("size-request", self.get_vruler_width, 2)
     
     def	get_hruler_height(self, w, size, i):
         self.hrulerheight[i] = size.height
@@ -258,9 +261,14 @@ class _SanePreview(gtk.DrawingArea):
             im = Image.new('L', (500,500))
             self.setInitImage(im)
         
-        self.connect("motion_notify_event", self.motion_notify)
-        self.connect("button-press-event", self.button_pressed)
-        self.connect("button-release-event", self.button_released)
+        optnames = device.getOptionNames()
+        can_set_window =     'tl_x' in optnames and 'tl_y' in optnames \
+                        and 'br_x' in optnames and 'br_y' in optnames
+        
+        if can_set_window:
+            self.connect("motion_notify_event", self.motion_notify)
+            self.connect("button-press-event", self.button_pressed)
+            self.connect("button-release-event", self.button_released)
         
         self.buttons = 0
         self.imagescale = -1
@@ -343,10 +351,29 @@ class _SanePreview(gtk.DrawingArea):
         scalex = float(w)/(xmax-xmin)
         scaley = float(h)/(ymax-ymin)
         device = self.device
-        tlx = device.tl_x * scalex
-        brx = device.br_x * scalex
-        tly = device.tl_y * scaley
-        bry = device.br_y * scaley
+        
+        # Strange: For the v4l backend (others too??), tl_x etc may 
+        # be inactive, and the device object had not yet had the chance
+        # to cache these option, before this method is called.
+        # In this case, no scan window will be drawn
+        # Similary, these attributes may not be available.
+        # this case, the entire scan area is used displayed as the scan window
+        
+        try:
+            tlx = device.tl_x * scalex
+            brx = device.br_x * scalex
+            tly = device.tl_y * scaley
+            bry = device.br_y * scaley
+        except AttributeError, val:
+            if str(val).find('No such attribute') == 0:
+                tlx = xmin
+                brx = xmax
+                tly = ymin
+                bry = ymax
+            elif str(val).find('Inactive option:') == 0:
+                return
+            else:
+                raise
 
         w = int(brx - tlx)
         h = int(bry - tly)

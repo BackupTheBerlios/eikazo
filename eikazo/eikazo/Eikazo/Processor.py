@@ -478,8 +478,13 @@ class SaneScannerControl(SaneThreadingQueueingProcessor, SaneInputProducer):
                     job.status['scan'] = _('scanning')
                     self.notify('status changed', job)
                     # collect relevant scan information
-                    job.scanwindow = (self.device.tl_x, self.device.br_x,
-                                           self.device.tl_y, self.device.br_y)
+                    try:
+                        job.scanwindow = (self.device.tl_x, self.device.br_x,
+                                          self.device.tl_y, self.device.br_y)
+                    except KeyError:
+                        # for backends that do not provide tl_x, tl_y etc
+                        xmax, ymax = self.device._device.get_parameters()[2]
+                        job.scanwindow = (0, xmax, 0, ymax)
                     job.resolution = self.device._device.resolution
                     if 'y_resolution' in self.device.getOptionNames():
                         job.y_resolution = self.device._device.y_resolution
