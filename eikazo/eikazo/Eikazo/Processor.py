@@ -485,11 +485,27 @@ class SaneScannerControl(SaneThreadingQueueingProcessor, SaneInputProducer):
                         # for backends that do not provide tl_x, tl_y etc
                         xmax, ymax = self.device._device.get_parameters()[2]
                         job.scanwindow = (0, xmax, 0, ymax)
-                    job.resolution = self.device._device.resolution
+                    try:
+                        job.resolution = self.device._device.resolution
+                    except AttributeError:
+                        # Insert a fake value... The resolution is required
+                        # in several output and postprocessing plugins; 
+                        # especially for printing,it it more or less required, 
+                        # unless the option to properly scale the print output
+                        # is dropped. 
+                        # Similary, the UI for some postprocessing plugins
+                        # assumes a defined resolution, and optionally
+                        # ignoring it would make the UI creation a bit
+                        # complicated.
+                        # FIXME: add a warning about "faked" resolution
+                        # somewhere?
+                        # FIXME: allow to define the resolution via os.getenv
+                        # or some config option?
+                        job.resolution = 72
                     if 'y_resolution' in self.device.getOptionNames():
                         job.y_resolution = self.device._device.y_resolution
                     else:
-                        job.y_resolution = self.device._device.resolution
+                        job.y_resolution = job.resolution
                     
                     if self.TEST and self.duplex_scanner_status_backside:
                         # xxx test: force an error to see, if requeueing a
@@ -533,6 +549,7 @@ class SaneScannerControl(SaneThreadingQueueingProcessor, SaneInputProducer):
                     in_duplex_mode = self.device.duplex_mode()
 
                     self.device._device.start()
+                    scanparms = self.device._device.get_parameters()
 
                     if in_duplex_mode:
                         self.duplex_scanner_status_backside = \
@@ -551,8 +568,7 @@ class SaneScannerControl(SaneThreadingQueueingProcessor, SaneInputProducer):
                             raise
                     # the sane module delivers a gray scale image even for
                     # lineart scans. 
-                    if self.device._device.mode.lower() in ('lineart',
-                                                            'halftone'):
+                    if scanparms[0] == 'L' and scanparms[3] == 1:
                         img = img.convert('1')
                     job.img = img
                     job.status['scan'] = _("scanned")

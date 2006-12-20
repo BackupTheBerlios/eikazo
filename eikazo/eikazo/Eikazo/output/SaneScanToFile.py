@@ -512,7 +512,7 @@ class ScanToFile(outputinfo.OutputProvider):
 
     
     def fnbrowse_click(self, w):
-        self._fnbrowse_click(w. False)
+        self._fnbrowse_click(w, False)
     
     def fmt_changed(self, w):
         i = self.fmt.get_active()

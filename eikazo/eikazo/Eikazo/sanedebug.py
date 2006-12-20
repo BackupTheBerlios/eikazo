@@ -62,6 +62,11 @@ class SaneDev(_origSaneDev):
             return _origSaneDev.__getattr__(self, key)
         else:
             raise AttributeError, 'No such attribute: ' + key
+    
+    def get_options(self):
+        res = _origSaneDev.get_options(self)
+        return [x for x in res if not x[1].replace('-', '_') in disabled_options]
+        
 
 def open(devname):
     return SaneDev(devname)

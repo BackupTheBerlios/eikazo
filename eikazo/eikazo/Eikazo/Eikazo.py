@@ -572,7 +572,7 @@ Currently you can only view scanned images in this program.
         dlg = gtk.FileChooserDialog(_("Select filename..."), None,
                   gtk.FILE_CHOOSER_ACTION_SAVE,
                   (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                   gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+                   gtk.STOCK_SAVE, gtk.RESPONSE_OK))
         dlg.set_default_response(gtk.RESPONSE_OK)
         filter = gtk.FileFilter()
         filter.set_name(_("Eikazo config files (*.eicfg)"))

@@ -8,4 +8,3 @@ include Eikazo/version.txt
 include Eikazo/doc/*.rst
 include Eikazo/doc/*.html
 include Eikazo/doc/images/*
-include PIL/*

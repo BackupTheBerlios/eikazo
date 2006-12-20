@@ -415,7 +415,7 @@ SaneDev_snap(SaneDevObject *self, PyObject *args)
     
   endian.i16 = 1;
   
-  if (!PyArg_ParseTuple(args, "i|O", &L, &pyNoCancel))
+  if (!PyArg_ParseTuple(args, "l|O", &L, &pyNoCancel))
     return NULL;
   if (self->h==NULL)
     {
@@ -1206,7 +1206,7 @@ PySane_OPTION_IS_ACTIVE(PyObject *self, PyObject *args)
   SANE_Int cap;
   long lg;
   
-  if (!PyArg_ParseTuple(args, "i", &lg))
+  if (!PyArg_ParseTuple(args, "l", &lg))
     return NULL;
   cap=lg;
   return PyInt_FromLong( SANE_OPTION_IS_ACTIVE(cap));
@@ -1218,7 +1218,7 @@ PySane_OPTION_IS_SETTABLE(PyObject *self, PyObject *args)
   SANE_Int cap;
   long lg;
   
-  if (!PyArg_ParseTuple(args, "i", &lg))
+  if (!PyArg_ParseTuple(args, "l", &lg))
     return NULL;
   cap=lg;
   return PyInt_FromLong( SANE_OPTION_IS_SETTABLE(cap));
